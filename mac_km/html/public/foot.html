@@ -1,0 +1,23 @@
+<!-- 页脚 -->
+
+    <footer class="ifoot">
+
+        <nav class="bnav">
+
+		{maccms:type ids="parent" order="asc" by="sort"}
+
+		<a href="{:mac_url_type($vo)}" title="{$vo.type_name}">{$vo.type_name} nổi bật</a>
+
+		{/maccms:type}
+
+		<a href="{:mac_url('gbook/index')}" title="Để lại lời nhắn">Để lại lời nhắn</a> | 
+		<a href="http://www.cunshao.com" title="Blog Trẻ Trâu">Blog Trẻ Trâu</a>
+		</nav>
+
+        <p>Trang web này chỉ cung cấp các dịch vụ trang WEB, và không cung cấp dịch vụ ghi và lưu trữ video.</p>
+		<p>Nếu nội dung có trong trang này không vi phạm bản quyền của công ty bạn, vui lòng liên hệ hộp thư ở phía dưới và chúng tôi sẽ xóa nội dung đó trong vòng 24 giờ.</p>
+        <p class="en">Hòm thư {$maccms.site_url}:{$maccms.site_email}</p>
+
+    </footer>
+
+<span style="display:none"><script src="{$maccms.path}static/js/tj.js"></script></span>

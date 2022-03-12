@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+	{include file="module/meta"}
+    <title>{$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.vod_name}{$obj['vod_down_list'][$param['sid']]['urls'][$param['nid']]['name']}Tải xuống,{$obj.vod_name}Tóm tắt" />
+    <meta name="description" content="{$obj.vod_name}{$obj['vod_down_list'][$param['sid']]['urls'][$param['nid']]['name']}Tải xuống,{$obj.vod_name}Tóm tắt" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<div class="headtopnull"></div>
+<div class="ec-body-z search-body cf">
+<div class="ec-left-z l top20" id="list-focus">
+    {notempty name="$obj.vod_down_from"}
+    <script type="text/javascript" src="{$maccms.path_tpl}js/down.js"></script>
+    {maccms:foreach name="obj.vod_down_list" id="vo" key="key"}
+    <div class="pannel cf top20">
+        <div id="downlist_{$key}">
+            <div class="ant-tabscontent cf">
+                <h2 class="tabs-moduletitle l">{$vo.player_info.show}</h2>
+                <div class="tabs-nav r col04">※ Nếu không có phản hồi sau khi nhấp vào Tải xuống, vui lòng sao chép thủ công địa chỉ tải xuống trong hộp sang phần mềm Xunlei</div>
+            </div>
+            <div id="playsx" class="down_list {if condition="$key eq 1"}show{/if}">
+            <ul id="downul">
+                {maccms:foreach name="vo.urls" id="vo2" key="key2"}
+                <li><input type="checkbox" name="down_url_list_{$key}" class="style-input down_url" value="{$vo2.url}" file_name="{$vo2.name}" />
+                    <p><strong class="down_part_name"><span class="filename">{$vo2.name}</span><span class="filesize"></span></strong><input type="text" class="thunder_url" value="{$vo2.url}" title="Nhấp vào nút chuột trái để chọn tất cả và sao chép thủ công địa chỉ Thunderbolt để chia sẻ hoặc các hoạt động khác" onclick="this.select()" /></p><span><label class="thunder_down">Tải xuống</label><label class="xiaomi">Bộ định tuyến</label><a href="{$vo2.url}" class="btn_bd btnd">Tải xuống</a><!--label class="kk">看看播放</label--></span></li>
+                {/maccms:foreach}
+            </ul>
+            <div class="downtools">
+                <input id="allcheck{$key}" class="style-input" type="checkbox" name="checkall"><em>Chọn tất cả</em><a rel="nofollow" href="javascript:void(0);" target="_self" class="thunder_down_all">Tải hàng loạt</a>
+            </div>
+        </div>
+    </div>
+</div>
+    {/maccms:foreach}
+    {else}
+    <div class="wrap">
+        <div>
+            <img src="{$maccms.path_tpl}images/null.png" alt="Không có dữ liệu">
+        </div>
+        <p class="top20">Chưa có file tải xuống<a class="active" href="{:mac_url('gbook/index')}">Bấm vào để xem phản hồi</a></p>
+    </div>
+    {/notempty}
+</div>
+<div class="r ec-right-z top20" id="xihuan">
+    {include file="module/right_list"}
+</div>
+</div>
+{include file="public/foot" wap="wap"}
+</body>
+</html>

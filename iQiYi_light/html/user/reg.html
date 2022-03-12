@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>{$maccms.site_name}</title>
+	<meta name="keywords" content="{$maccms.site_keywords}"/>
+	<meta name="description" content="{$maccms.site_description}"/>
+	{include file="public/include" /}
+</head>
+<body>
+<body id="reg">
+	<div class="reg-w user">
+	    <div class="reg-logo">
+			<a title="{$maccms.site_name}" style="background-image: url({$conch['dscms']['gx']['logo2']});" href="{$maccms.path}"></a>
+		</div>
+		<form method="post" id="fm" action="">
+			<h4>Đăng ký</h4>
+			<div class="reg-group ec-input">
+				<label class="bd-r" style="letter-spacing: normal;">Tài khoản</label><input type="text" id="user_name" name="user_name" class="reg-control" placeholder="Vui lòng nhập thông tin Tài khoản">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Mật khẩu</label><input type="password" id="user_pwd" name="user_pwd" class="reg-control" placeholder="Vui lòng nhập thông tin Mật khẩu">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Xác nhận mk</label><input type="password" id="user_pwd2" name="user_pwd2" class="reg-control" placeholder="Vui lòng xác nhận mật khẩu">
+			</div>
+			{if condition="$user_config.reg_phone_sms neq 0"}
+			<input type="hidden" name="ac" value="phone">
+			<div class="reg-group ec-input">
+				<label>Số đt</label><input type="text" class="reg-control w150" id="to" name="to" placeholder="Vui lòng nhập số đt">
+				<input type="button" class="r m-hi reg-yzm" id="btn_send_sms" value="Lấy mã xác minh"/>
+			</div>
+			<div class="reg-group ec-input">
+				<label>Mã xác minh</label><input type="text" class="reg-control" id="code" name="code" placeholder="Vui lòng nhập mã xác minh">
+			</div>
+			{elseif condition="$user_config.reg_email_sms neq 0"}
+			<input type="hidden" name="ac" value="email">
+			<div class="reg-group ec-input">
+				<label>Địa chỉ email</label><input type="text" class="reg-control w150" id="to" name="to" placeholder="Vui lòng nhập email">
+				<input type="button" class="r m-hi reg-yzm" id="btn_send_sms" value="Lấy mã xác minh"/>
+			</div>
+			<div class="reg-group ec-input">
+				<label>Mã xác minh</label><input type="text" class="reg-control" id="code" name="code" placeholder="Vui lòng nhập mã xác minh">
+			</div>
+			{/if}
+
+			{if condition="$user_config.reg_verify neq 0"}
+			<div class="reg-group ec-input">
+				<label>Mã xác minh</label><input type="text" class="reg-control w150" id="verify" name="verify" placeholder="mã xác minh">
+				<img class="r m-hi" id="verify_img" src="{:url('verify/index')}" onClick="this.src=this.src+'?'"  alt="Nhấp để làm mới" />
+			</div>
+            {/if}
+			<input type="button" id="btn_submit" class="button ec-denglubj btn-brand btn-sub" value="Đăng ký ngay">
+		</form>
+	<div class="reg-ts anthology-wrap">
+   	    <a href="{$maccms.path}">Trở về</a><a href="{:url('user/login')}">Đăng nhập tài khoản</a><a href="{:url('user/findpass')}">Quên mật khẩu</a>
+    </div>
+	</div>
+
+<!-- // sign-box#regbox end -->
+<script type="text/javascript">
+
+    var countdown=60;
+    function settime(val) {
+        if (countdown == 0) {
+            val.removeAttribute("disabled");
+            val.value="Lấy mã xác minh";
+            countdown = 60;
+            return true;
+        } else {
+            val.setAttribute("disabled", true);
+            val.value="Gửi lại(" + countdown + ")";
+            countdown--;
+        }
+        setTimeout(function() {settime(val) },1000)
+    }
+
+
+		$("body").bind('keyup',function(event) {
+			if(event.keyCode==13){ $('#btnLogin').click(); }
+		});
+
+        $('#btn_send_sms').click(function(){
+            var ac = $('input[name="ac"]').val();
+            var to = $('input[name="to"]').val();
+            if(ac=='email') {
+                var pattern = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                var ex = pattern.test(to);
+                if (!ex) {
+                    alert('Định dạng email không chính xác');
+                    return;
+                }
+            }
+            else if(ac=='phone') {
+                var pattern=/^[1][0-9]{10}$/;
+                var ex = pattern.test(to);
+                if (!ex) {
+                    alert('Định dạng số điện thoại không chính xác');
+                    return;
+                }
+            }
+            else{
+                alert('Lỗi tham số');
+                return;
+            }
+
+
+            settime(this);
+            var data = $("#fm").serialize();
+
+            $.ajax({
+                url: "{:url('user/reg_msg')}",
+                type: "post",
+                dataType: "json",
+                data: data,
+                beforeSend: function () {
+                    //开启loading
+                },
+                success: function (r) {
+                    alert(r.msg);
+                },
+                complete: function () {
+                    //结束loading
+                }
+            });
+        });
+
+		$('#btn_submit').click(function() {
+			if ($('#user_name').val()  == '') { alert('Vui lòng nhập người dùng! '); $("#user_name").focus(); return false; }
+			if ($('#user_pwd').val()  == '') { alert('Vui lòng nhập mật khẩu！'); $("#user_pwd").focus(); return false; }
+			if ($('#verify').val()  == '') { alert('Vui lòng nhập mã xác minh！'); $("#verify").focus(); return false; }
+
+			$.ajax({
+				url: "{:url('user/reg')}",
+				type: "post",
+				dataType: "json",
+				data: $('#fm').serialize(),
+				beforeSend: function () {
+					$("#btn_submit").css("background","#fd6a6a").val("loading...");
+				},
+				success: function (r) {
+					alert(r.msg);
+					if(r.code==1){
+						location.href="{:url('user/login')}";
+					}
+					else{
+						$('#verify_img').click();
+					}
+				},
+				complete: function () {
+					$("#btn_submit").css("background","#fa4646").val("Đăng ký ngay");
+				}
+			});
+
+		});
+
+
+</script>
+</body>
+</html>

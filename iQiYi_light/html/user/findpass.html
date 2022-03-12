@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>{$maccms.site_name} </title>
+	<meta name="keywords" content="{$maccms.site_keywords}"/>
+	<meta name="description" content="{$maccms.site_description}"/>
+	{include file="public/include" /}
+</head>
+<body id="reg">
+	<div class="reg-w user">
+		<div class="reg-logo">
+			<a title="{$maccms.site_name}" style="background-image: url({$conch['dscms']['gx']['logo2']});" href="{$maccms.path}"></a>
+		</div>
+		<form method="post" id="fm" action="">
+			<h4>Khôi phục mật khẩu</h4>
+			<div class="reg-group ec-input">
+				<label class="bd-r" style="letter-spacing: normal;">Tài khoản</label><input type="text" id="user_name" name="user_name" class="reg-control" placeholder="Nhập tài khoản">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Câu hỏi</label><input type="text" id="user_question" name="user_question" class="reg-control" placeholder="Vui lòng nhập câu hỏi bảo mật của bạn">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Câu trả lời</label><input type="text" id="user_answer" name="user_answer" class="reg-control" placeholder="Vui lòng nhập câu trả lời bí mật của bạn">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Mk mới</label><input type="password" id="user_pwd" name="user_pwd" class="reg-control" placeholder="Vui lòng nhập mật khẩu mới của bạn">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Xác nhận mk</label><input type="password" id="user_pwd2" name="user_pwd2" class="reg-control" placeholder="Vui lòng nhập mật khẩu xác nhận của bạn">
+			</div>
+			<div class="reg-group ec-input">
+				<label>Mã xác nhận</label><input type="text" class="reg-control w150" id="verify" name="verify" placeholder="Vui lòng nhập mã xác nhận">
+				<img class="r m-hi" src="{:url('verify/index')}" onClick="this.src=this.src+'?'"  alt="Nhấp để làm mới" />
+			</div>
+			<input type="button" id="btn_submit" class="button ec-denglubj btn-brand btn-sub" value="Lấy lại ngay">
+		</form>
+    <div class="reg-ts anthology-wrap">
+    	<a href="{:url('user/login')}">Đăng nhập</a><a href="{:url('user/findpass_msg')}?ac=email">Nhận lại qua email</a><a href="{:url('user/findpass_msg')}?ac=phone">Lấy lại qua điện thoại</a>
+    </div>
+	</div>
+	
+<!-- // sign-box#regbox end -->
+<script type="text/javascript">
+
+	$(function(){
+		$("body").bind('keyup',function(event) {
+			if(event.keyCode==13){ $('#btnLogin').click(); }
+		});
+		$('#btn_submit').click(function() {
+			if ($('#user_name').val()  == '') { alert('Vui lòng nhập người dùng!'); $("#user_name").focus(); return false; }
+			if ($('#user_pwd').val()  == '') { alert('Xin hãy điền mật khẩu!'); $("#user_pwd").focus(); return false; }
+			if ($('#verify').val()  == '') { alert('Vui lòng nhập mã xác nhận!'); $("#verify").focus(); return false; }
+
+			$.ajax({
+				url: "{:url('user/findpass')}",
+				type: "post",
+				dataType: "json",
+				data: $('#fm').serialize(),
+				beforeSend: function () {
+					$("#btn_submit").css("background","#fd6a6a").val("loading...");
+				},
+				success: function (r) {
+					if(r.code==1){
+						location.href="{:url('user/index')}";
+					}
+					else{
+						alert(r.msg);
+					}
+				},
+				complete: function () {
+					$('#verify').click();
+					$("#btn_submit").css("background","#fa4646").val("Lấy lại ngay");
+				}
+			});
+
+		});
+	});
+</script>
+</body>
+</html>
